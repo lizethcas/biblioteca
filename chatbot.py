@@ -1,34 +1,20 @@
 import flet as ft
 import os
 import json
+from load_book import load_books, save_books
+from show_books import show_books, add_book
 comandos = {
     "add":"agregar",
     "remove" : "eliminar",
     "update" : "actualizar",
     "list" : "listar" 
 }
-def load_books():
-    with open("libros.json", "r", encoding="utf-8") as file:
-        books = json.load(file)
 
-    return books 
 books = load_books()
-def save_books(books):
-    with open("libros.json", "w", encoding="utf-8") as files:
-        json.dump(books,files)
 def main (page: ft.Page):
     page.title = "biblioteca"
     messages = ft.Column(scroll = True, expand = True, width = page.width)
-    def show_books():
-        list = ft.Column()
-        for book in books:
-            list.controls.append( 
-                ft.ListTile(
-                title = ft.Text( book["Titulo"]), 
-                subtitle = ft.Text (book["Autor"]),
-                on_click =lambda e, l=book: show_details(l,list)
-            ))
-        return list   
+    
     def update(book):
         print(book)
         titulo =  ft.TextField( label = "titulo", value = book ["Titulo"])
@@ -97,30 +83,11 @@ def main (page: ft.Page):
              )
         list.controls.append(row)
         page.update()
-    def add_book():
-        titulo = ft.TextField(label ="Título")
-        autor = ft.TextField( label= "Autor")
-        comentarios = ft.TextField(label = "comentarios")
-        calificacion = ft.TextField(label ="calificación")
-        portada = ft.TextField(label = "portada")
-        def on_save():
-            data = {
-            "Titulo" : titulo.value,
-            "Autor" : autor.value,
-            "Portada" : portada.value,
-            "comentarios" : comentarios.value,
-            "calificacion" : calificacion.value
-            }
-            books.append(data)
-            save_books(books)
-            messages.controls.append(ft.Text("Libro guardado exitosamente!"))
-            page.update()
-        boton  = ft.Button("Guardar", on_click = lambda e: on_save())
-        return ft.Column ([titulo, autor, portada, comentarios, calificacion, boton])
+    add_book(books, messages, page)
     def add_message(e):
         message = text_area.value.strip()
         if message == "list":
-            messages.controls.append(show_books())
+            messages.controls.append(show_books(books, show_details))
         elif message == "add":
            messages.controls.append(add_book())
         else:
