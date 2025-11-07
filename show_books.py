@@ -39,28 +39,31 @@ def delete(books,book, messages, page):
     page.update()
     
 def update(books, book, messages, page):
-    titulo =  ft.TextField( label = "titulo", value = book ["Titulo"])
-    autor =  ft.TextField(label = "Autor", value = book ["Autor"])
-    portada = ft.TextField(label = "Portada", value = book ["Portada"])
-    comentarios = ft.TextField(label = "comentarios", value = book ["comentarios"])
-    calificacion = ft.TextField(label = "calificacion", value = book ["calificacion"])
+    titulo =  ft.TextField(label="Título", value=book["Titulo"])
+    autor =  ft.TextField(label="Autor", value=book["Autor"])
+    portada = ft.TextField(label="Portada", value=book["Portada"])
+    comentarios = ft.TextField(label="Comentarios", value=book["comentarios"])
+    calificacion = ft.TextField(label="Calificación", value=book["calificacion"])
+    
     def on_save(e):
-        data = {
-           "Titulo" : titulo.value,
-            "Autor" : autor.value,
-            "Portada" : portada.value,
-            "comentarios" : comentarios.value,
-            "calificacion" : calificacion.value
-            }
-        books.append(data)
+        # actualizar los datos del libro original
+        book["Titulo"] = titulo.value
+        book["Autor"] = autor.value
+        book["Portada"] = portada.value
+        book["comentarios"] = comentarios.value
+        book["calificacion"] = calificacion.value
+
         save_books(books)
-        messages.controls.append(ft.Text("libro actualizado exitosamente") )
-        page.update() 
-        buttons = ft.Button("Guardar", on_click =  on_save)
-        messages.controls.append(
-            ft.Column(
-                controls = [titulo, autor, portada, comentarios, calificacion, buttons]
-                       
-            )
-        ) 
+
+        messages.controls.append(ft.Text("Libro actualizado exitosamente!"))
         page.update()
+
+    save_button = ft.Button("Guardar", on_click=on_save)
+
+    # mostrar los campos para editar
+    messages.controls.append(
+        ft.Column(
+            controls=[titulo, autor, portada, comentarios, calificacion, save_button]
+        )
+    )
+    page.update()

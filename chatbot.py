@@ -1,6 +1,5 @@
 import flet as ft
-import os
-import json
+
 from load_book import load_books, save_books
 from show_books import show_books, add_book, delete, update
 comandos = {
@@ -14,14 +13,14 @@ books = load_books()
 def main (page: ft.Page):
     page.title = "biblioteca"
     messages = ft.Column(scroll = True, expand = True, width = page.width)
-    def confirm(book):
+    def confirm(book,show_details):
         confirmation = ft.Column(
             controls=[
                 ft.Text("¿Estás seguro que quieres eliminar el libro?"),
                 ft.Row(
                     controls=[
                         ft.Button("SI", on_click=lambda e, b=book: delete(books, b, messages, page)),
-                        ft.Button("NO", on_click=lambda e, b=book: show_books())
+                        ft.Button("NO", on_click=lambda e, b=book: show_books(books, show_details))
                     ]
                 )
             ]
@@ -41,7 +40,7 @@ def main (page: ft.Page):
                     ft.Text(book["calificacion"]),
                     ft.Row(
                         controls=[
-                            ft.Button("eliminar", on_click=lambda e, b=book: confirm(b)),
+                            ft.Button("eliminar", on_click=lambda e, b=book: confirm(b,show_details)),
                             ft.Button("actualizar", on_click=lambda e, b=book: update(books, b, messages, page))
                                 ]
                             )
